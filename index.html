@@ -6,36 +6,154 @@
     <title>🚀 Robot de Prédiction Pro</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Ajout des SDK Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <style>
     /* Animations */
-    .animate-pulse {
-        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-    }
-
     @keyframes pulse {
-        0%, 100% {
-            opacity: 1;
-        }
-        50% {
-            opacity: .5;
-        }
+        0%, 100% { opacity: 1; }
+        50% { opacity: .5; }
     }
-
-    .animate-bounce {
-        animation: bounce 1s infinite;
-    }
+    .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
 
     @keyframes bounce {
-        0%, 100% {
-            transform: translateY(-25%);
-            animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
-        }
-        50% {
-            transform: translateY(0);
-            animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
-        }
+        0%, 100% { transform: translateY(-25%); }
+        50% { transform: translateY(0); }
     }
+    .animate-bounce { animation: bounce 1s infinite; }
 
+    @keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.8); }
+        to { opacity: 1; transform: scale(1); }
+    }
+    
+    /* Styles spécifiques */
+    .countdown-container {
+        margin-top: 2rem;
+        padding: 1.5rem;
+        background: linear-gradient(145deg, #f3f4f6, #ffffff);
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .coefficient-badge {
+        display: inline-block;
+        background: linear-gradient(145deg, #3B82F6, #1E40AF);
+        color: white;
+        border-radius: 9999px;
+        padding: 0.25rem 0.75rem;
+        font-size: 0.875rem;
+        margin: 0.25rem;
+        animation: fadeIn 0.3s ease-out;
+    }
+    
+    .auto-fetch-container {
+        background: linear-gradient(145deg, #f0f4f8, #def1ff);
+        border-radius: 12px;
+        padding: 15px;
+        margin-top: 20px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    
+    .predicted-rounds-container {
+        margin-top: 1.5rem;
+        padding: 1.2rem;
+        background: linear-gradient(145deg, #f0f9ff, #e0f2fe);
+        border-radius: 12px;
+        border: 1px solid #bae6fd;
+    }
+    
+    .round-badge {
+        display: inline-block;
+        background: linear-gradient(145deg, #1d4ed8, #3b82f6);
+        color: white;
+        border-radius: 8px;
+        padding: 0.5rem 1.2rem;
+        font-weight: bold;
+        font-size: 1.1rem;
+        margin: 0.3rem;
+        box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
+    }
+    
+    .verification-status {
+        padding: 0.5rem;
+        border-radius: 8px;
+        margin-top: 0.5rem;
+        font-size: 0.85rem;
+        text-align: center;
+    }
+    
+    .verification-in-progress {
+        background-color: #fffbeb;
+        color: #854d0e;
+        border: 1px solid #fde68a;
+    }
+    
+    .verification-success {
+        background-color: #dcfce7;
+        color: #166534;
+        border: 1px solid #86efac;
+    }
+    
+    .verification-failed {
+        background-color: #fee2e2;
+        color: #b91c1c;
+        border: 1px solid #fca5a5;
+    }
+    
+    .round-indicator {
+        display: inline-block;
+        background: linear-gradient(145deg, #1d4ed8, #3b82f6);
+        color: white;
+        border-radius: 8px;
+        padding: 0.3rem 0.8rem;
+        font-weight: bold;
+        font-size: 0.9rem;
+        margin: 0.1rem;
+    }
+    
+    .history-item {
+        transition: all 0.3s ease;
+    }
+    
+    .history-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .stats-card {
+        background: linear-gradient(145deg, #ffffff, #f9fafb);
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        padding: 1.5rem;
+    }
+    
+    .robot-header {
+        background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+        color: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .feature-card {
+        background: linear-gradient(145deg, #f0f9ff, #e0f7fa);
+        border-radius: 12px;
+        padding: 1.2rem;
+        margin-bottom: 1rem;
+        border: 1px solid #bae6fd;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    .floating {
+        animation: float 3s ease-in-out infinite;
+    }
     /* Responsive et Scroll Styles */
     @media (max-width: 768px) {
         #loginModal {
@@ -79,289 +197,16 @@
     #loginModal > div > div::-webkit-scrollbar-thumb:hover {
         background: #555;
     }
-    
-    /* Styles du compte à rebours */
-    .countdown-container {
-        margin-top: 2rem;
-        padding: 1.5rem;
-        background: linear-gradient(145deg, #f3f4f6, #ffffff);
-        border-radius: 15px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .countdown-header {
-        font-size: 1.2rem;
-        color: #1a73e8;
-        margin-bottom: 1rem;
-        font-weight: bold;
-        text-align: center;
-    }
-
-    .countdown-timer {
-        display: flex;
-        justify-content: center;
-        gap: 1rem;
-    }
-
-    .countdown-box {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        min-width: 80px;
-        padding: 0.8rem;
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(26, 115, 232, 0.1);
-        transition: transform 0.3s ease;
-    }
-
-    .countdown-box:hover {
-        transform: translateY(-2px);
-    }
-
-    .countdown-box span {
-        font-size: 1.8rem;
-        font-weight: bold;
-        color: #1a73e8;
-        margin-bottom: 0.3rem;
-    }
-
-    .countdown-box label {
-        font-size: 0.8rem;
-        color: #666;
-        text-transform: uppercase;
-    }
-
-    @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.05); }
-        100% { transform: scale(1); }
-    }
-
-    .countdown-box.urgent span {
-        color: #dc3545;
-        animation: pulse 1s infinite;
-    }
-    
-    .coefficient-badge {
-        display: inline-block;
-        background: linear-gradient(145deg, #3B82F6, #1E40AF);
-        color: white;
-        border-radius: 9999px;
-        padding: 0.25rem 0.75rem;
-        font-size: 0.875rem;
-        margin: 0.25rem;
-        animation: fadeIn 0.3s ease-out;
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: scale(0.8); }
-        to { opacity: 1; transform: scale(1); }
-    }
-    
-    .auto-fetch-container {
-        background: linear-gradient(145deg, #f0f4f8, #def1ff);
-        border-radius: 12px;
-        padding: 15px;
-        margin-top: 20px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    }
-    
-    .auto-fetch-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 15px;
-    }
-    
-    .auto-fetch-title {
-        font-weight: bold;
-        color: #1E3A8A;
-    }
-    
-    .auto-fetch-status {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 0.875rem;
-        color: #4B5563;
-    }
-    
-    .auto-fetch-dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background-color: #10B981;
-    }
-    
-    .auto-fetch-dot.inactive {
-        background-color: #EF4444;
-    }
-    
-    .coefficients-display {
-        min-height: 60px;
-        background: rgba(255, 255, 255, 0.7);
-        border-radius: 8px;
-        padding: 10px;
-        margin-top: 10px;
-        border: 1px dashed #3B82F6;
-    }
-    
-    .fetching-spinner {
-        width: 20px;
-        height: 20px;
-        border: 3px solid rgba(59, 130, 246, 0.3);
-        border-top: 3px solid #3B82F6;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        display: inline-block;
-        vertical-align: middle;
-        margin-right: 8px;
-    }
-    
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-    
-    .auto-fetch-controls {
-        display: flex;
-        gap: 10px;
-        margin-top: 15px;
-    }
-    
-    .auto-fetch-btn {
-        flex: 1;
-        padding: 8px 0;
-        border-radius: 8px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-align: center;
-    }
-    
-    .auto-fetch-btn.start {
-        background: linear-gradient(145deg, #10B981, #047857);
-        color: white;
-    }
-    
-    .auto-fetch-btn.stop {
-        background: linear-gradient(145deg, #EF4444, #B91C1C);
-        color: white;
-    }
-    
-    .auto-fetch-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-    
-    /* Nouveaux styles pour les rounds prédits */
-    .predicted-rounds-container {
-        margin-top: 1.5rem;
-        padding: 1.2rem;
-        background: linear-gradient(145deg, #f0f9ff, #e0f2fe);
-        border-radius: 12px;
-        border: 1px solid #bae6fd;
-    }
-    
-    .predicted-rounds-title {
-        font-weight: bold;
-        color: #0369a1;
-        margin-bottom: 0.8rem;
-        text-align: center;
-        font-size: 1.1rem;
-    }
-    
-    .round-badge {
-        display: inline-block;
-        background: linear-gradient(145deg, #1d4ed8, #3b82f6);
-        color: white;
-        border-radius: 8px;
-        padding: 0.5rem 1.2rem;
-        font-weight: bold;
-        font-size: 1.1rem;
-        margin: 0.3rem;
-        box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
-    }
-    
-    .round-advice {
-        margin-top: 1rem;
-        padding: 0.8rem;
-        border-radius: 8px;
-        font-size: 0.95rem;
-        text-align: center;
-    }
-    
-    .round-advice.high-confidence {
-        background-color: #dcfce7;
-        color: #166534;
-        border: 1px solid #86efac;
-    }
-    
-    .round-advice.medium-confidence {
-        background-color: #fffbeb;
-        color: #854d0e;
-        border: 1px solid #fde68a;
-    }
-    
-    .round-advice.low-confidence {
-        background-color: #fee2e2;
-        color: #b91c1c;
-        border: 1px solid #fca5a5;
-    }
-    
-    .prediction-accuracy-badge {
-        display: inline-block;
-        padding: 0.3rem 0.8rem;
-        border-radius: 20px;
-        font-size: 0.85rem;
-        margin-left: 0.5rem;
-        vertical-align: middle;
-    }
-    
-    .high-accuracy {
-        background-color: #dcfce7;
-        color: #166534;
-    }
-    
-    .medium-accuracy {
-        background-color: #fffbeb;
-        color: #854d0e;
-    }
-    
-    .low-accuracy {
-        background-color: #fee2e2;
-        color: #b91c1c;
-    }
     </style>
-    <!-- Firebase Scripts -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-<script>
-    // Configuration Firebase
-    const firebaseConfig = {
-        apiKey: "AIzaSyBKkCEsvjAh9DIhBlx5tfQzM5ceTSP0Tiw",
-        authDomain: "predictionbot-59e47.firebaseapp.com",
-        projectId: "predictionbot-59e47",
-        storageBucket: "predictionbot-59e47.appspot.com",
-        messagingSenderId: "804807142505",
-        appId: "1:804807142505:web:da39797c5354de59ad46f8",
-        measurementId: "G-9DB03YTP83"
-    };
-
-    // Initialisation Firebase
-    firebase.initializeApp(firebaseConfig);
-</script>
 </head>
-<body>
-<!-- Modal de connexion avec scroll amélioré -->
+<body class="bg-gray-50">
+<!-- Modal de connexion -->
 <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
     <div class="min-h-screen w-full py-6 flex items-center justify-center">
         <div class="bg-white rounded-2xl p-8 max-w-xl w-full mx-4 my-auto shadow-2xl relative">
             <!-- Code Promo Animé -->
             <div class="relative -mt-2 mb-8">
-                <a href="https://t.me/betsmartbotcasino" 
-                   class="block bg-gradient-to-r from-purple-600 to-pink-600 p-6 rounded-xl text-center transform hover:scale-105 transition-all duration-300">
+                <a href="https://t.me/betsmartbotcasino" class="block bg-gradient-to-r from-purple-600 to-pink-600 p-6 rounded-xl text-center transform hover:scale-105 transition-all duration-300">
                     <div class="absolute -top-3 -right-3 bg-red-500 text-white text-xs px-3 py-1 rounded-full animate-bounce">
                         INFORMATION IMPORTANTE 
                     </div>
@@ -404,32 +249,31 @@
                     placeholder="Entrez votre code d'accès"
                 >
             </div>
-            <!-- Ajouter après la zone de code d'accès -->
-<div class="countdown-container" id="countdownContainer" style="display: none;">
-    <div class="countdown-header">Temps restant</div>
-    <div class="countdown-timer">
-        <div class="countdown-box">
-            <span id="days">00</span>
-            <label>Jours</label>
-        </div>
-        <div class="countdown-box">
-            <span id="hours">00</span>
-            <label>Heures</label>
-        </div>
-        <div class="countdown-box">
-            <span id="minutes">00</span>
-            <label>Minutes</label>
-        </div>
-        <div class="countdown-box">
-            <span id="seconds">00</span>
-            <label>Secondes</label>
-        </div>
-    </div>
-</div>
+            
+            <div class="countdown-container" id="countdownContainer" style="display: none;">
+                <div class="countdown-header text-center font-bold text-blue-700 mb-4">Temps restant</div>
+                <div class="countdown-timer flex justify-center gap-4">
+                    <div class="countdown-box bg-white p-3 rounded-lg shadow-md">
+                        <span id="days" class="block text-2xl font-bold text-blue-600">00</span>
+                        <label class="text-gray-600 text-sm">Jours</label>
+                    </div>
+                    <div class="countdown-box bg-white p-3 rounded-lg shadow-md">
+                        <span id="hours" class="block text-2xl font-bold text-blue-600">00</span>
+                        <label class="text-gray-600 text-sm">Heures</label>
+                    </div>
+                    <div class="countdown-box bg-white p-3 rounded-lg shadow-md">
+                        <span id="minutes" class="block text-2xl font-bold text-blue-600">00</span>
+                        <label class="text-gray-600 text-sm">Minutes</label>
+                    </div>
+                    <div class="countdown-box bg-white p-3 rounded-lg shadow-md">
+                        <span id="seconds" class="block text-2xl font-bold text-blue-600">00</span>
+                        <label class="text-gray-600 text-sm">Secondes</label>
+                    </div>
+                </div>
+            </div>
 
             <!-- Forfaits -->
             <div class="grid md:grid-cols-3 gap-6 mb-8">
-                <!-- Forfait 24H -->
                 <div class="relative bg-gradient-to-br from-blue-500/10 to-blue-600/10 p-6 rounded-xl border border-blue-200 backdrop-blur-sm hover:transform hover:scale-105 transition-all duration-300">
                     <div class="absolute -top-3 -right-3 bg-blue-500 text-white text-xs px-3 py-1 rounded-full">
                         24H
@@ -439,7 +283,6 @@
                     <p class="text-sm text-blue-600">Accès complet 24h</p>
                 </div>
 
-                <!-- Forfait Semaine -->
                 <div class="relative bg-gradient-to-br from-purple-500/10 to-purple-600/10 p-6 rounded-xl border border-purple-200 backdrop-blur-sm hover:transform hover:scale-105 transition-all duration-300">
                     <div class="absolute -top-3 -right-3 bg-purple-500 text-white text-xs px-3 py-1 rounded-full">
                         SEMAINE
@@ -449,7 +292,6 @@
                     <p class="text-sm text-purple-600">Accès complet 7 jours</p>
                 </div>
 
-                <!-- Forfait Mois -->
                 <div class="relative bg-gradient-to-br from-green-500/10 to-green-600/10 p-6 rounded-xl border border-green-200 backdrop-blur-sm hover:transform hover:scale-105 transition-all duration-300">
                     <div class="absolute -top-3 -right-3 bg-green-500 text-white text-xs px-3 py-1 rounded-full">
                         MOIS
@@ -459,7 +301,6 @@
                     <p class="text-sm text-green-600">Accès complet 30 jours</p>
                 </div>
             </div>
-
             <!-- Messages importants -->
             <div class="space-y-6 mb-8">
                 <!-- Horaires et Délais -->
@@ -527,24 +368,7 @@
                 </div>
             </div>
 
-            <!-- Boutons de contact -->
-            <div class="grid grid-cols-2 gap-6 mb-8">
-                <a href="https://t.me/betsmartbotcasino" 
-                   class="flex items-center justify-center bg-blue-500 text-white py-3 px-6 rounded-xl hover:bg-blue-600 transform hover:-translate-y-1 transition-all duration-300 font-semibold">
-                    <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18.717-.962 3.845-1.362 5.452-.168.674-.374 1.193-.611 1.555-.238.362-.455.517-.65.465-.414-.11-.92-.44-1.518-.989-.842-.766-1.318-1.242-2.113-1.989-.935-.874-.329-1.355.204-2.141.139-.205 2.555-2.342 2.601-2.542.006-.025.011-.119-.044-.168-.055-.05-.136-.033-.194-.019-.083.02-1.399.889-3.947 2.606-.373.256-.712.381-1.016.375-.334-.007-.978-.19-1.456-.346-.589-.193-1.057-.295-1.017-.624.021-.17.245-.343.673-.522 2.634-1.15 4.395-1.91 5.284-2.28 2.516-1.048 3.039-1.229 3.381-1.235.075-.001.241.017.348.098.079.057.127.164.142.273.024.183-.008.441-.105.777z"/>
-                    </svg>
-                    Telegram
-                </a>
-                <a href="https://wa.me/2250506210051" 
-                   class="flex items-center justify-center bg-green-500 text-white py-3 px-6 rounded-xl hover:bg-green-600 transform hover:-translate-y-1 transition-all duration-300 font-semibold">
-                    <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824z"/>
-                    </svg>
-                    WhatsApp
-                </a>
-            </div>
-<!-- Bouton de connexion -->
+            <!-- Bouton de connexion -->
             <button 
                 onclick="verifyAccess()"
                 class="w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white py-4 rounded-xl hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 font-bold text-lg"
@@ -559,212 +383,301 @@
         </div>
     </div>
 </div>
-  <div class="flex items-center justify-center p-4">
-    <div class="prediction-container w-full max-w-4xl p-6">        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">            
-            <!-- Colonne Principale -->
-            <div class="md:col-span-2">
-                <div class="text-center mb-6">
-                    <h1 class="text-4xl font-extrabold text-gray-800 flex items-center justify-center">
-                        🤖 Predicteur Pro 
-                        <span class="ml-3 bg-green-500 text-white text-sm px-3 py-1 rounded-full">V2.5</span>
-                    </h1>
-                    <p class="text-gray-600 mt-2">Prédictions intelligentes avec analyse avancée</p>
-                </div>               
-
-                <!-- Zone de Saisie -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <div class="advanced-input">
-                        <label class="block text-gray-700 mb-2 font-semibold">Côtes (min. 3)</label>
+<!-- Interface principale -->
+<div class="container mx-auto px-4 py-8">
+    <div class="robot-header text-center">
+        <h1 class="text-4xl font-bold flex items-center justify-center">
+            <i class="fas fa-robot mr-3 floating"></i>
+            🤖 Predicteur Pro 
+            <span class="ml-3 bg-green-500 text-white text-sm px-3 py-1 rounded-full">V3.0</span>
+        </h1>
+        <p class="mt-2 text-blue-100">Suivi automatique des prédictions avec analyse avancée</p>
+    </div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+        <!-- Colonne principale -->
+        <div class="lg:col-span-2">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">
+                    <i class="fas fa-chart-line text-blue-500 mr-2"></i>
+                    Analyse des Côtes
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="feature-card">
+                        <label class="block text-gray-700 font-bold mb-3">
+                            <i class="fas fa-list-ol text-blue-500 mr-2"></i>
+                            Côtes (min. 3)
+                        </label>
                         <input 
                             type="text" 
                             id="oddsInput" 
                             placeholder="Ex: 1.50, 1.75, 2.00," 
-                            class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                         >
-                        <div class="tooltip">Entrez au moins 3 côtes séparées par des virgules</div>
                     </div>
-                    <div class="advanced-input">
-                        <label class="block text-gray-700 mb-2 font-semibold">Mise (€)</label>
+                    
+                    <div class="feature-card">
+                        <label class="block text-gray-700 font-bold mb-3">
+                            <i class="fas fa-coins text-yellow-500 mr-2"></i>
+                            Mise (€)
+                        </label>
                         <input 
                             type="number" 
                             id="betAmount" 
                             placeholder="Montant à miser" 
-                            class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                             min="0"
                             step="0.01"
                         >
-                        <div class="tooltip">Entrez votre mise pour calculer les gains potentiels</div>
-                    </div>
-                </div>
-                <!-- Boutons -->
-                <div class="flex space-x-4 mb-6">
-                    <button 
-                        onclick="predictOdds()" 
-                        class="custom-button flex-grow bg-blue-500 text-white py-3 px-6 rounded-lg hover:bg-blue-600 transition flex items-center justify-center font-semibold"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        Analyser
-                    </button>
-                    <button 
-                        onclick="openAdvancedSettings()" 
-                        class="custom-button bg-green-500 text-white py-3 px-6 rounded-lg hover:bg-green-600 transition font-semibold"
-                    >
-                        ⚙️ Options
-                    </button>
-                </div>
-
-                <!-- Résultat -->
-                <div 
-                    id="result" 
-                    class="p-6 bg-gradient-to-r from-blue-50 to-green-50 rounded-lg shadow-sm transition-all"
-                >
-                    <div class="text-center text-gray-600">
-                        Entrez vos côtes pour obtenir une prédiction
                     </div>
                 </div>
                 
-                <!-- Section Récupération Automatique -->
-                <div class="auto-fetch-container">
+                <div class="flex gap-4 mb-6">
+                    <button onclick="predictOdds()" class="flex-1 bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 px-6 rounded-lg hover:opacity-90 transition font-semibold flex items-center justify-center">
+                        <i class="fas fa-calculator mr-2"></i>
+                        Analyser
+                    </button>
+                    <button onclick="openAdvancedSettings()" class="bg-gradient-to-r from-green-500 to-teal-600 text-white py-3 px-6 rounded-lg hover:opacity-90 transition font-semibold">
+                        <i class="fas fa-cog mr-2"></i>
+                        Options
+                    </button>
+                </div>
+                
+                <div id="result" class="bg-gray-50 rounded-xl p-6 mt-4 border border-gray-200">
+                    <div class="text-center text-gray-500">
+                        Entrez vos côtes pour obtenir une prédiction
+                    </div>
+                </div>
+                <div class="auto-fetch-container mt-6">
                     <div class="auto-fetch-header">
-                        <div class="auto-fetch-title">
+                        <div class="auto-fetch-title font-bold text-blue-800">
                             <i class="fas fa-sync-alt mr-2"></i> Récupération Automatique
                         </div>
-                        <div class="auto-fetch-status" id="autoFetchStatus">
-                            <span class="auto-fetch-dot inactive"></span>
+                        <div class="auto-fetch-status text-gray-700" id="autoFetchStatus">
+                            <span class="auto-fetch-dot bg-red-500 rounded-full w-3 h-3 inline-block mr-2"></span>
                             <span>Inactif</span>
                         </div>
                     </div>
                     
-                    <div class="coefficients-display" id="coefficientsDisplay">
+                    <div class="coefficients-display mt-4 bg-white rounded-lg p-4" id="coefficientsDisplay">
                         <p class="text-center text-gray-500">Les coefficients apparaîtront ici</p>
                     </div>
                     
-                    <div class="auto-fetch-controls">
-                        <div class="auto-fetch-btn start" onclick="startAutoFetch()">
+                    <div class="flex gap-4 mt-4">
+                        <button onclick="startAutoFetch()" class="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 text-white py-2 rounded-lg hover:opacity-90 transition font-semibold">
                             Démarrer
-                        </div>
-                        <div class="auto-fetch-btn stop" onclick="stopAutoFetch()">
+                        </button>
+                        <button onclick="stopAutoFetch()" class="flex-1 bg-gradient-to-r from-red-500 to-rose-600 text-white py-2 rounded-lg hover:opacity-90 transition font-semibold">
                             Arrêter
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Colonne Statistiques -->
-            <div>
-                <!-- Stats Rapides -->
-                <div class="grid grid-cols-1 gap-4 mb-6">
-                    <div class="stat-card">
-                        <h4 class="text-sm text-gray-600 font-semibold">Statistiques Globales</h4>
-                        <div id="statsContainer">
-                            <p id="totalPredictions" class="text-2xl font-bold text-blue-600">0</p>
-                            <p id="predictionAccuracy" class="text-xl font-bold text-green-600">0%</p>
-                            <div id="statsDetails" class="stats-detail"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Analyse Intelligence -->
-                <div class="stat-card mb-4">
-                    <div class="flex justify-between items-center mb-2">
-                        <h4 class="text-sm text-gray-600 font-semibold">🧠 Analyse Intelligence</h4>
-                        <button 
-                            onclick="analyzeHistoricalData()" 
-                            class="px-2 py-1 bg-purple-500 text-white rounded-lg text-xs hover:bg-purple-600 transition"
-                        >
-                            Actualiser
                         </button>
                     </div>
-                    <div id="intelligentAnalysis" class="text-sm space-y-2">
-                        <div class="animate-pulse text-gray-500">
-                            Cliquez sur Actualiser pour analyser les données
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Historique -->
-                <div class="bg-white p-4 rounded-lg shadow-sm">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-bold text-gray-800">📊 Historique</h3>
-                        <button 
-                            id="toggleHistory" 
-                            class="px-3 py-1 bg-blue-500 text-white rounded-lg text-sm hover:bg-blue-600 transition"
-                            onclick="toggleHistoryVisibility()"
-                        >
-                            Masquer
-                        </button>
-                    </div>
-                    <div id="predictionHistory" class="space-y-3 max-h-[400px] overflow-y-auto"></div>
                 </div>
             </div>
         </div>
-        <!-- Graphique -->
-        <div class="mt-6 bg-white p-4 rounded-lg shadow-sm">
-            <canvas id="statsChart"></canvas>
+        
+        <!-- Colonne de droite -->
+        <div>
+            <div class="stats-card mb-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">
+                    <i class="fas fa-chart-pie text-purple-500 mr-2"></i>
+                    Statistiques Globales
+                </h3>
+                <div id="statsContainer" class="text-center">
+                    <p id="totalPredictions" class="text-3xl font-bold text-blue-600">0</p>
+                    <p id="predictionAccuracy" class="text-2xl font-bold text-green-600 mt-2">0%</p>
+                    <div class="grid grid-cols-3 gap-4 mt-4">
+                        <div class="bg-green-100 p-3 rounded-lg">
+                            <p class="text-lg font-bold text-green-800">✅</p>
+                            <p class="text-sm text-gray-700">Validées</p>
+                            <p id="successCount" class="font-bold">0</p>
+                        </div>
+                        <div class="bg-red-100 p-3 rounded-lg">
+                            <p class="text-lg font-bold text-red-800">❌</p>
+                            <p class="text-sm text-gray-700">Échouées</p>
+                            <p id="failedCount" class="font-bold">0</p>
+                        </div>
+                        <div class="bg-yellow-100 p-3 rounded-lg">
+                            <p class="text-lg font-bold text-yellow-800">⏳</p>
+                            <p class="text-sm text-gray-700">En attente</p>
+                            <p id="pendingCount" class="font-bold">0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stats-card mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold text-gray-800">
+                        <i class="fas fa-brain text-indigo-500 mr-2"></i>
+                        Analyse Intelligence
+                    </h3>
+                    <button onclick="analyzeHistoricalData()" class="bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-3 py-1 rounded-lg text-sm hover:opacity-90 transition">
+                        Actualiser
+                    </button>
+                </div>
+                <div id="intelligentAnalysis" class="text-sm space-y-3">
+                    <div class="animate-pulse text-gray-500">
+                        Cliquez sur Actualiser pour analyser les données
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold text-gray-800">
+                        <i class="fas fa-history text-blue-500 mr-2"></i>
+                        Historique des Prédictions
+                    </h3>
+                    <button id="toggleHistory" class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-3 py-1 rounded-lg text-sm hover:opacity-90 transition" onclick="toggleHistoryVisibility()">
+                        Masquer
+                    </button>
+                </div>
+                <div id="predictionHistory" class="space-y-4 max-h-[500px] overflow-y-auto pr-2"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Section graphique -->
+    <div class="bg-white rounded-xl shadow-lg p-6 mt-8">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">
+            <i class="fas fa-chart-bar text-green-500 mr-2"></i>
+            Évolution des Prédictions
+        </h3>
+        <canvas id="statsChart" height="300"></canvas>
+    </div>
+    
+    <!-- Section Fonctionnalités -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+        <div class="feature-card">
+            <div class="text-blue-500 text-3xl mb-3">
+                <i class="fas fa-bolt"></i>
+            </div>
+            <h4 class="font-bold text-lg text-gray-800 mb-2">Suivi Automatique</h4>
+            <p class="text-gray-600">Le système vérifie automatiquement le succès de chaque prédiction sur les 5 rounds suivants.</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="text-green-500 text-3xl mb-3">
+                <i class="fas fa-robot"></i>
+            </div>
+            <h4 class="font-bold text-lg text-gray-800 mb-2">IA Avancée</h4>
+            <p class="text-gray-600">Algorithmes intelligents pour prédire les côtes avec une précision optimale.</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="text-purple-500 text-3xl mb-3">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <h4 class="font-bold text-lg text-gray-800 mb-2">Analyse en Temps Réel</h4>
+            <p class="text-gray-600">Visualisez l'évolution de vos prédictions grâce à des graphiques interactifs.</p>
         </div>
     </div>
 </div>
-<!-- Footer avec coordonnées -->
-<footer class="w-full text-center py-6 bg-gray-50 mt-8">
-    <div class="space-y-2">
-        <p class="text-gray-700 font-semibold">Contactez-nous</p>
-        <p class="text-gray-600">
-            <a href="tel:+2250506210051" class="hover:text-blue-600 transition">
-                📞 +225 05 06 21 00 51
-            </a>
-        </p>
-        <p class="text-gray-600">
-            <a href="mailto:dieudonne230@gmail.com" class="hover:text-blue-600 transition">
-                ✉️ dieudonne230@gmail.com
-            </a>
-        </p>
+
+<footer class="bg-gradient-to-r from-gray-800 to-gray-900 text-white py-12 mt-16">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <h3 class="text-xl font-bold mb-4">Predicteur Pro</h3>
+                <p class="text-gray-300">L'outil ultime pour les prédictions de paris avec une précision inégalée.</p>
+            </div>
+            
+            <div>
+                <h4 class="font-bold text-lg mb-4">Navigation</h4>
+                <ul class="space-y-2 text-gray-300">
+                    <li><a href="#" class="hover:text-white transition">Accueil</a></li>
+                    <li><a href="#" class="hover:text-white transition">Fonctionnalités</a></li>
+                    <li><a href="#" class="hover:text-white transition">Tarifs</a></li>
+                    <li><a href="#" class="hover:text-white transition">FAQ</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h4 class="font-bold text-lg mb-4">Support</h4>
+                <ul class="space-y-2 text-gray-300">
+                    <li><i class="fas fa-phone mr-2"></i> +225 05 06 21 00 51</li>
+                    <li><i class="fas fa-envelope mr-2"></i> dieudonne230@gmail.com</li>
+                    <li><i class="fab fa-whatsapp mr-2"></i> WhatsApp Support</li>
+                    <li><i class="fab fa-telegram mr-2"></i> Telegram Channel</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-lg mb-4">Mises à jour</h4>
+                <p class="text-gray-300 mb-4">Inscrivez-vous pour recevoir les dernières nouveautés.</p>
+                <div class="flex">
+                    <input type="email" placeholder="Votre email" class="px-4 py-2 rounded-l-lg w-full">
+                    <button class="bg-gradient-to-r from-blue-500 to-indigo-600 px-4 py-2 rounded-r-lg">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+         <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; 2023 Predicteur Pro. Tous droits réservés.</p>
+        </div>
     </div>
 </footer>
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    // Configuration Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyBKkCEsvjAh9DIhBlx5tfQzM5ceTSP0Tiw",
+        authDomain: "predictionbot-59e47.firebaseapp.com",
+        projectId: "predictionbot-59e47",
+        storageBucket: "predictionbot-59e47.appspot.com",
+        messagingSenderId: "804807142505",
+        appId: "1:804807142505:web:da39797c5354de59ad46f8",
+        measurementId: "G-9DB03YTP83"
+    };
+    
+    // Initialisation Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    
     // Variables globales
     let predictionHistory = JSON.parse(localStorage.getItem('predictionHistory')) || [];
     let statsChart = null;
     let isHistoryVisible = true;
-    
-    // Variables pour la récupération automatique des coefficients
     let autoCoefficients = [];
     let autoFetchInterval = null;
-    const apiURL = "https://crash-gateway-orc-cr.gamedev-tech.cc/state?id_n=01961b17-0b19-736b-8827-5eb6f27f89bb&id_i=077dee8d-c923-4c02-9bee-757573662e69";
-    const headers = { 
-        "Authorization": "Bearer 57131fa7-8605-412d-aabd-5066cb5b0fe3",
-        "Accept": "application/json",
-        "Content-Type": "application/json"
-    };
-
-    // Initialisation au chargement de la page
+    let pendingVerification = [];
+    let isAutoFetchActive = false;
+    
+    // Initialisation au chargement
     document.addEventListener('DOMContentLoaded', () => {
         updatePredictionHistory();
         updateStatistics();
         updateStatsChart();
         analyzeHistoricalData();
+        
+        // Vérifier si l'utilisateur est déjà connecté
+        const hasAccess = localStorage.getItem('codeAccess');
+        const expiration = localStorage.getItem('accessExpiration');
+        const now = new Date().getTime();
+        
+        if (hasAccess && expiration && now < parseInt(expiration)) {
+            document.getElementById('loginModal').style.display = 'none';
+            const expirationDate = new Date(parseInt(expiration));
+            startExpirationTimer(expirationDate);
+        }
     });
 
-    // Fonction pour démarrer la récupération automatique des coefficients
+    // Fonction pour démarrer la récupération automatique
     function startAutoFetch() {
-        if (autoFetchInterval) return; // Déjà démarré
+        if (autoFetchInterval) return;
         
-        // Mettre à jour le statut
+        isAutoFetchActive = true;
         const statusElement = document.getElementById('autoFetchStatus');
         statusElement.innerHTML = `
-            <span class="auto-fetch-dot"></span>
+            <span class="bg-green-500 rounded-full w-3 h-3 inline-block mr-2"></span>
             <span>Récupération en cours...</span>
-            <span class="fetching-spinner"></span>
+            <span class="fetching-spinner ml-2 w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full inline-block animate-spin"></span>
         `;
         
-        // Démarrer l'intervalle
-        autoFetchInterval = setInterval(fetchLatestCoefficient, 5000); // Toutes les 3 secondes
+        autoFetchInterval = setInterval(fetchLatestCoefficient, 5000);
         
-        // Afficher un message
         Swal.fire({
             icon: 'success',
             title: 'Récupération démarrée',
@@ -778,15 +691,14 @@
         if (autoFetchInterval) {
             clearInterval(autoFetchInterval);
             autoFetchInterval = null;
+            isAutoFetchActive = false;
             
-            // Mettre à jour le statut
             const statusElement = document.getElementById('autoFetchStatus');
             statusElement.innerHTML = `
-                <span class="auto-fetch-dot inactive"></span>
+                <span class="bg-red-500 rounded-full w-3 h-3 inline-block mr-2"></span>
                 <span>Inactif</span>
             `;
             
-            // Afficher un message
             Swal.fire({
                 icon: 'info',
                 title: 'Récupération arrêtée',
@@ -798,32 +710,35 @@
     // Fonction pour récupérer le dernier coefficient
     async function fetchLatestCoefficient() {
         try {
+            // URL de l'API simulée
+            const apiURL = "https://crash-gateway-orc-cr.gamedev-tech.cc/state?id_n=01961b17-0b19-736b-8827-5eb6f27f89bb&id_i=077dee8d-c923-4c02-9bee-757573662e69";
+            const headers = { 
+                "Authorization": "Bearer 57131fa7-8605-412d-aabd-5066cb5b0fe3",
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            };
+            
             const response = await fetch(apiURL, { headers });
             if (!response.ok) throw new Error("Erreur API");
             const data = await response.json();
             
-            // Accès au coefficient via round_config
-            const roundConfig = data.round_config || {};
             const coefficient = data.stop_coefficients?.[0];
             
             if (coefficient) {
-                // Convertir 1.00 en 1.01
                 const adjustedCoefficient = coefficient === 1.00 ? 1.01 : coefficient;
+                const roundedCoefficient = parseFloat(adjustedCoefficient.toFixed(2));
                 
-                // Ajouter le coefficient à la liste
-                autoCoefficients.push(adjustedCoefficient.toFixed(2));
-                
-                // Mettre à jour l'interface
+                autoCoefficients.push(roundedCoefficient);
                 updateCoefficientsDisplay();
-                
-                // Mettre à jour le champ de saisie
                 document.getElementById('oddsInput').value = autoCoefficients.join(', ');
                 
-                // Si nous avons 5 coefficients, déclencher la prédiction
+                // Vérification des prédictions en attente
+                verifyPendingPredictions(roundedCoefficient);
+                
+                // Si 5 coefficients, déclencher la prédiction
                 if (autoCoefficients.length >= 5) {
-                    predictOdds();
+                    predictOdds(true);
                     
-                    // Réinitialiser après un court délai
                     setTimeout(() => {
                         autoCoefficients = [];
                         updateCoefficientsDisplay();
@@ -833,14 +748,75 @@
             }
         } catch (error) {
             console.error("Erreur lors de la récupération des coefficients:", error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Erreur',
-                text: 'Impossible de récupérer les coefficients'
-            });
         }
     }
     
+    // Vérification des prédictions en attente
+    function verifyPendingPredictions(newCoefficient) {
+        const updatedPending = [];
+        
+        for (const pending of pendingVerification) {
+            // Vérifier si le nouveau coefficient valide la prédiction
+            if (newCoefficient >= pending.predictedOdds) {
+                // Succès - mettre à jour la prédiction
+                const predictionIndex = predictionHistory.findIndex(p => p.id === pending.id);
+                if (predictionIndex !== -1) {
+                    predictionHistory[predictionIndex].verificationStatus = 'success';
+                    predictionHistory[predictionIndex].verifiedRound = pending.currentRound;
+                    predictionHistory[predictionIndex].status = 'success';
+                    predictionHistory[predictionIndex].round = pending.currentRound;
+                    localStorage.setItem('predictionHistory', JSON.stringify(predictionHistory));
+                    updatePredictionHistory();
+                    updateStatistics();
+                    
+                    // Afficher notification
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Prédiction validée!',
+                        html: `La prédiction ${pending.predictedOdds} a été validée au Round ${pending.currentRound}`,
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                }
+            } else {
+                // Incrémenter le round
+                pending.currentRound++;
+                
+                // Vérifier si on a dépassé le nombre de rounds à vérifier
+                if (pending.currentRound <= 5) {
+                    updatedPending.push(pending);
+                    
+                    // Mettre à jour l'historique
+                    updatePredictionHistory();
+                } else {
+                    // Échec après 5 rounds
+                    const predictionIndex = predictionHistory.findIndex(p => p.id === pending.id);
+                    if (predictionIndex !== -1) {
+                        predictionHistory[predictionIndex].verificationStatus = 'failed';
+                        predictionHistory[predictionIndex].status = 'failed';
+                        
+                        localStorage.setItem('predictionHistory', JSON.stringify(predictionHistory));
+                        updatePredictionHistory();
+                        updateStatistics();
+                        
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Prédiction échouée',
+                            html: `La prédiction ${pending.predictedOdds} n'a pas été validée dans les 5 rounds`,
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                    }
+                }
+            }
+        }
+        
+        pendingVerification = updatedPending;
+    }
     // Fonction pour mettre à jour l'affichage des coefficients
     function updateCoefficientsDisplay() {
         const displayElement = document.getElementById('coefficientsDisplay');
@@ -863,7 +839,7 @@
     }
 
     // Fonction de prédiction principale
-    function predictOdds() {
+    function predictOdds(autoTriggered = false) {
         const settings = JSON.parse(localStorage.getItem('predictionSettings')) || {
             analysisMode: 'standard',
             excludeExtremes: false,
@@ -920,7 +896,9 @@
             status: 'pending',
             originalOdds: oddsArray.join(', '),
             round: null,
-            analysisMode: settings.analysisMode
+            analysisMode: settings.analysisMode,
+            verificationStatus: 'pending',
+            verifiedRound: null
         };
 
         // Déterminer les rounds d'apparition et le message associé
@@ -956,6 +934,14 @@
 
         predictionHistory.unshift(predictionResult);
         localStorage.setItem('predictionHistory', JSON.stringify(predictionHistory));
+         // Ajouter à la vérification automatique si déclenché automatiquement
+        if (autoTriggered && isAutoFetchActive) {
+            pendingVerification.push({
+                id: predictionResult.id,
+                predictedOdds: parseFloat(averageOdds.toFixed(2)),
+                currentRound: 1
+            });
+        }
 
         updatePredictionDisplay(predictionResult);
         updatePredictionHistory();
@@ -994,207 +980,167 @@
     function updatePredictionDisplay(prediction) {
         let roundHTML = '';
         let adviceClass = '';
-         if (prediction.predictedRounds && prediction.predictedRounds.length > 0) {
-            // Déterminer la classe CSS en fonction du niveau de confiance
+        
+        if (prediction.predictedRounds && prediction.predictedRounds.length > 0) {
             if (prediction.accuracyClass === "high-accuracy") {
-                adviceClass = "round-advice high-confidence";
+                adviceClass = "bg-green-100 text-green-800";
             } else if (prediction.accuracyClass === "medium-accuracy") {
-                adviceClass = "round-advice medium-confidence";
+                adviceClass = "bg-yellow-100 text-yellow-800";
             } else {
-                adviceClass = "round-advice low-confidence";
+                adviceClass = "bg-red-100 text-red-800";
             }
             
             roundHTML = `
                 <div class="predicted-rounds-container">
-                    <div class="predicted-rounds-title">Rounds Prédits d'Apparition</div>
+                    <div class="text-center font-bold text-lg text-blue-700 mb-3">Rounds Prédits d'Apparition</div>
                     <div class="text-center">
                         ${prediction.predictedRounds.map(round => `
                             <span class="round-badge">${round}</span>
                         `).join('')}
                     </div>
-                    <div class="${adviceClass}">
+                    <div class="mt-4 p-3 rounded-lg ${adviceClass}">
                         ${prediction.roundMessage}
                     </div>
                 </div>
             `;
         }
-
-        // Ajout du badge de précision à côté de la probabilité
-        const accuracyBadge = prediction.accuracyClass ? 
-            `<span class="prediction-accuracy-badge ${prediction.accuracyClass}">Précision</span>` : 
-            '';
-
+// Statut de vérification
+        let verificationStatus = '';
+        if (prediction.verificationStatus === 'pending') {
+            const pendingInfo = pendingVerification.find(p => p.id === prediction.id);
+            const currentRound = pendingInfo ? pendingInfo.currentRound : 1;
+            
+            verificationStatus = `
+                <div class="verification-status verification-in-progress mt-4">
+                    <i class="fas fa-sync-alt fa-spin mr-2"></i>
+                    Vérification en cours... 
+                    <span class="font-bold">Round ${currentRound}/5</span>
+                </div>
+            `;
+        } else if (prediction.verificationStatus === 'success') {
+            verificationStatus = `
+                <div class="verification-status verification-success mt-4">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    ✅ Validé au Round ${prediction.verifiedRound}
+                </div>
+            `;
+        } else if (prediction.verificationStatus === 'failed') {
+            verificationStatus = `
+                <div class="verification-status verification-failed mt-4">
+                    <i class="fas fa-times-circle mr-2"></i>
+                    ❌ Échoué après 5 rounds
+                </div>
+            `;
+        }
         document.getElementById('result').innerHTML = `
-            <div class="grid grid-cols-2 gap-4">
-                <div class="text-center">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="text-center p-4 bg-blue-50 rounded-lg">
                     <span class="text-sm text-gray-600 block mb-1">Côte Probable</span>
-                    <p class="text-2xl font-bold text-blue-600">${prediction.averageOdds}</p>
-                    <p class="text-sm text-gray-500">${prediction.probabilities[0]}% de chances</p>
+                    <p class="text-3xl font-bold text-blue-600">${prediction.averageOdds}</p>
                 </div>
-                <div class="text-center">
+                
+                <div class="text-center p-4 bg-green-50 rounded-lg">
                     <span class="text-sm text-gray-600 block mb-1">Probabilité de Réussite</span>
-                    <p class="text-2xl font-bold text-green-600">${prediction.probabilities[0]}% ${accuracyBadge}</p>
+                    <p class="text-3xl font-bold text-green-600">${prediction.probabilities[0]}%</p>
                 </div>
+                
                 ${prediction.potentialWin !== 'N/A' ? `
-                <div class="col-span-2 text-center mt-2">
+                <div class="col-span-full text-center p-4 bg-purple-50 rounded-lg mt-2">
                     <span class="text-sm text-gray-600 block mb-1">Gain Potentiel</span>
                     <p class="text-2xl font-bold text-purple-600">${prediction.potentialWin} €</p>
                 </div>` : ''}
             </div>
             ${roundHTML}
+            ${verificationStatus}
         `;
     }
     
     function updatePredictionHistory() {
         const historyContainer = document.getElementById('predictionHistory');
-        historyContainer.innerHTML = predictionHistory.map((prediction) => `
-            <div class="history-item bg-gray-50 p-3 rounded-lg shadow-sm">
-                <div class="flex justify-between items-center mb-2">
-                    <div>
-                        <p class="font-semibold text-sm">${prediction.date}</p>
-                        <p class="text-xs text-gray-600">
-                            Côte prédite: ${prediction.averageOdds} 
-                            <span class="text-blue-600">(${prediction.probabilities[0]}% de chances)</span>
-                        </p>
-                        <p class="text-xs text-gray-500">Côtes d'origine: ${prediction.originalOdds}</p>
-                        ${prediction.round ? `
-                            <div class="mt-1">
-                                <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-                                    Round ${prediction.round}
-                                </span>
-                                <span class="text-xs ml-2 ${prediction.status === 'success' 
-                                    ? 'bg-green-100 text-green-800' 
-                                    : 'bg-red-100 text-red-800'
-                                } px-2 py-1 rounded-full">
-                                    ${prediction.probabilities[0]}% de précision
-                                </span>
+        historyContainer.innerHTML = predictionHistory.map((prediction) => {
+            // Vérifier si cette prédiction est en cours de vérification
+            const isPendingVerification = pendingVerification.some(p => p.id === prediction.id);
+            const pendingInfo = pendingVerification.find(p => p.id === prediction.id);
+            
+            return `
+            <div class="history-item bg-white border border-gray-200 p-4 rounded-xl">
+                <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="font-semibold text-gray-800">${prediction.date}</p>
+                                <p class="text-sm text-gray-600">
+                                    Prédiction: <span class="font-bold text-blue-600">${prediction.averageOdds}</span> 
+                                    <span class="ml-2">(${prediction.probabilities[0]}%)</span>
+                                </p>
                             </div>
-                        ` : ''}
-                        <p class="text-xs text-gray-500 mt-1">
-                            <span class="bg-gray-100 px-2 py-1 rounded-full">
-                                Mode: ${prediction.analysisMode}
-                            </span>
-                        </p>
+                            <div>
+                                ${prediction.status === 'pending' ? `
+                                    <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">En attente</span>
+                                ` : prediction.status === 'success' ? `
+                                    <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Validée</span>
+                                ` : `
+                                    <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">Échouée</span>
+                                `}
+                            </div>
+                        </div>
+                        
                         ${prediction.predictedRounds ? `
-                            <div class="mt-1">
-                                <span class="text-xs font-semibold mr-2">Rounds prédits:</span>
+                            <div class="mt-3">
+                                <p class="text-xs text-gray-500 mb-1">Rounds prédits:</p>
                                 <div class="flex flex-wrap gap-1">
                                     ${prediction.predictedRounds.map(r => `
-                                        <span class="bg-indigo-100 text-indigo-800 text-xs px-2 py-0.5 rounded-full">
+                                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
                                             ${r}
                                         </span>
                                     `).join('')}
                                 </div>
                             </div>
                         ` : ''}
-                    </div>
-                    <div class="flex flex-col items-end space-y-2">
-                        ${prediction.status === 'pending' ? `
-                            <button 
-                                onclick="updatePredictionStatus('${prediction.id}', 'success')" 
-                                class="px-2 py-1 bg-green-500 text-white rounded-lg text-xs hover:bg-green-600 transition"
-                            >
-                                ✓ Validé
-                            </button>
-                            <button 
-                                onclick="updatePredictionStatus('${prediction.id}', 'failed')" 
-                                class="px-2 py-1 bg-red-500 text-white rounded-lg text-xs hover:bg-red-600 transition"
-                            >
-                                ✕ Échoué
-                            </button>
-                        ` : `
-                            <span class="px-3 py-1 rounded-full text-xs ${prediction.status === 'success' 
-                                ? 'bg-green-200 text-green-800' 
-                                : 'bg-red-200 text-red-800'
-                            }">
-                                ${prediction.status === 'success' ? '✅ Validé' : '❌ Échoué'}
-                            </span>
-                        `}
+                        
+                        <!-- Statut de vérification -->
+                        ${isPendingVerification ? `
+                            <div class="mt-3 text-xs bg-orange-50 text-orange-800 p-2 rounded-lg">
+                                <i class="fas fa-sync-alt fa-spin mr-1"></i>
+                                Vérification en cours: 
+                                <span class="font-bold">Round ${pendingInfo.currentRound}/5</span>
+                            </div>
+                        ` : ''}
+                        
+                        ${prediction.verificationStatus === 'success' ? `
+                            <div class="mt-3 text-xs bg-green-50 text-green-800 p-2 rounded-lg">
+                                <i class="fas fa-check-circle mr-1"></i>
+                                Validé au Round ${prediction.verifiedRound}
+                            </div>
+                        ` : ''}
+                        
+                        ${prediction.verificationStatus === 'failed' ? `
+                            <div class="mt-3 text-xs bg-red-50 text-red-800 p-2 rounded-lg">
+                                <i class="fas fa-times-circle mr-1"></i>
+                                Échoué après 5 rounds
+                            </div>
+                        ` : ''}
                     </div>
                 </div>
             </div>
-        `).join('');
+            `;
+        }).join('');
     }
-    
-    function updatePredictionStatus(predictionId, newStatus) {
-        const predictionIndex = predictionHistory.findIndex(p => p.id.toString() === predictionId);
-        
-        if (predictionIndex !== -1) {
-            const prediction = predictionHistory[predictionIndex];
-            
-            if (newStatus === 'success') {
-                Swal.fire({
-                    title: 'Validation de la Prédiction',
-                    html: `
-                        <div class="mb-4">
-                            <p class="text-sm mb-3">Probabilité initiale: ${prediction.probabilities[0]}%</p>
-                            <label class="block text-gray-700 mb-2">À quel round la prédiction a-t-elle été validée?</label>
-                            <select id="roundSelect" class="w-full p-2 border rounded">
-                                ${[1,2,3,4,5].map(num => 
-                                    `<option value="${num}">Round ${num}</option>`
-                                ).join('')}
-                            </select>
-                        </div>
-                    `,
-                    confirmButtonText: 'Confirmer',
-                    confirmButtonColor: '#3B82F6',
-                    showCancelButton: true,
-                    cancelButtonText: 'Annuler',
-                    allowOutsideClick: false
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        const selectedRound = document.getElementById('roundSelect').value;
-                        predictionHistory[predictionIndex].status = newStatus;
-                        predictionHistory[predictionIndex].round = parseInt(selectedRound);
-                        localStorage.setItem('predictionHistory', JSON.stringify(predictionHistory));
-                        updatePredictionHistory();
-                        updateStatistics();
-                        updateStatsChart();
-                        analyzeHistoricalData();
-
-                        Swal.fire({
-                            icon: 'success',
-                            title: `Prédiction validée au Round ${selectedRound}`,
-                            html: `Précision initiale: ${prediction.probabilities[0]}%`,
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000
-                        });
-                    }
-                });
-            } else {
-                predictionHistory[predictionIndex].status = newStatus;
-                localStorage.setItem('predictionHistory', JSON.stringify(predictionHistory));
-                updatePredictionHistory();
-                updateStatistics();
-                updateStatsChart();
-                analyzeHistoricalData();
-            }
-        }
-    }
-    
     function updateStatistics() {
         const total = predictionHistory.length;
-        const completed = predictionHistory.filter(p => p.status !== 'pending').length;
         const success = predictionHistory.filter(p => p.status === 'success').length;
         const failed = predictionHistory.filter(p => p.status === 'failed').length;
         const pending = predictionHistory.filter(p => p.status === 'pending').length;
         
-        const accuracy = completed > 0 
-            ? ((success / completed) * 100).toFixed(1)
+        const accuracy = total > 0 
+            ? ((success / total) * 100).toFixed(1)
             : '0';
 
-        const statsContainer = document.getElementById('statsContainer');
-        statsContainer.innerHTML = `
-            <p class="text-2xl font-bold text-blue-600">${total} Prédictions</p>
-            <p class="text-xl font-bold text-green-600">${accuracy}% de réussite</p>
-            <div class="stats-detail">
-                <p>✅ Validées: ${success}</p>
-                <p>❌ Échouées: ${failed}</p>
-                <p>⏳ En attente: ${pending}</p>
-            </div>
-        `;
+        document.getElementById('totalPredictions').textContent = total;
+        document.getElementById('predictionAccuracy').textContent = accuracy + '%';
+        document.getElementById('successCount').textContent = success;
+        document.getElementById('failedCount').textContent = failed;
+        document.getElementById('pendingCount').textContent = pending;
     }
 
     function updateStatsChart() {
@@ -1207,13 +1153,14 @@
         statsChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: completedPredictions.map((_, index) => `#${index + 1}`),
+                labels: completedPredictions.map((_, index) => `Prédiction #${index + 1}`),
                 datasets: [{
                     label: 'Côtes Moyennes',
                     data: completedPredictions.map(p => parseFloat(p.averageOdds)),
                     borderColor: 'rgb(59, 130, 246)',
                     backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                    tension: 0.4
+                    tension: 0.4,
+                    fill: true
                 }]
             },
             options: {
@@ -1235,7 +1182,6 @@
             }
         });
     }
-
     function openAdvancedSettings() {
         const currentSettings = JSON.parse(localStorage.getItem('predictionSettings')) || {
             analysisMode: 'standard',
@@ -1249,7 +1195,7 @@
                 <div class="grid grid-cols-1 gap-4">
                     <div class="text-left">
                         <label class="block text-gray-700 mb-2">Mode d'Analyse</label>
-                        <select id="analysisMode" class="w-full p-2 border rounded">
+                        <select id="analysisMode" class="w-full p-3 border border-gray-300 rounded-lg">
                             <option value="standard" ${currentSettings.analysisMode === 'standard' ? 'selected' : ''}>
                                 Standard (Moyenne simple)
                             </option>
@@ -1264,13 +1210,13 @@
                     <div class="text-left">
                         <label class="block text-gray-700 mb-2">Options d'Analyse</label>
                         <div class="space-y-2">
-                            <label class="flex items-center">
-                                <input type="checkbox" id="excludeExtremes" class="mr-2" 
+                            <label class="flex items-center p-2 bg-gray-50 rounded-lg">
+                                <input type="checkbox" id="excludeExtremes" class="mr-2 h-5 w-5" 
                                     ${currentSettings.excludeExtremes ? 'checked' : ''}>
                                 Exclure les valeurs extrêmes
                             </label>
-                            <label class="flex items-center">
-                                <input type="checkbox" id="trendAnalysis" class="mr-2"
+                            <label class="flex items-center p-2 bg-gray-50 rounded-lg">
+                                <input type="checkbox" id="trendAnalysis" class="mr-2 h-5 w-5"
                                     ${currentSettings.trendAnalysis ? 'checked' : ''}>
                                 Analyse tendancielle
                             </label>
@@ -1305,166 +1251,53 @@
             }
         });
     }
-    
-    function analyzeHistoricalData() {
+function analyzeHistoricalData() {
         const successfulPredictions = predictionHistory.filter(p => p.status === 'success');
         if (successfulPredictions.length === 0) {
             document.getElementById('intelligentAnalysis').innerHTML = `
-                <div class="text-gray-500">
-                    Pas encore assez de données pour l'analyse
+                <div class="text-center text-gray-500 p-4">
+                    <i class="fas fa-database text-3xl text-gray-400 mb-3"></i>
+                    <p>Pas encore assez de données pour l'analyse</p>
                 </div>
             `;
             return;
         }
 
-        const percentageRanges = analyzePercentageRanges(successfulPredictions);
-        const roundAnalysis = analyzeRounds(successfulPredictions);
-        const oddsAnalysis = analyzeOddsRanges(successfulPredictions);
-
         document.getElementById('intelligentAnalysis').innerHTML = `
-            <div class="space-y-3">
-                <div class="bg-purple-50 p-2 rounded analysis-card">
-                    <span class="font-semibold text-purple-800">Meilleur Intervalle de Probabilité:</span>
-                    <p class="text-purple-600">
-                        ${percentageRanges.bestRange}% (${percentageRanges.bestCount} succès)
-                        <span class="text-xs text-purple-500">
-                            Taux de réussite: ${percentageRanges.successRate}%
-                        </span>
-                    </p>
-                </div>
-
-                <div class="bg-blue-50 p-2 rounded analysis-card">
-                    <span class="font-semibold text-blue-800">Round le Plus Performant:</span>
+            <div class="space-y-4">
+                <div class="p-3 bg-blue-50 rounded-lg">
+                    <div class="font-bold text-blue-800 mb-2">
+                        <i class="fas fa-chart-line mr-2"></i>
+                        Performance Moyenne
+                    </div>
                     <p class="text-blue-600">
-                        Round ${roundAnalysis.bestRound} 
-                        <span class="text-xs text-blue-500">
-                            (${roundAnalysis.roundCount} succès sur ${roundAnalysis.totalForRound} prédictions)
-                        </span>
-                    </p>
-                </div>
-
-                <div class="bg-green-50 p-2 rounded analysis-card">
-                    <span class="font-semibold text-green-800">Meilleures Côtes:</span>
-                    <p class="text-green-600">
-                        ${oddsAnalysis.bestRange} 
-                        <span class="text-xs text-green-500">
-                            (${oddsAnalysis.successCount} succès)
-                        </span>
+                        Taux de réussite: <span class="font-bold">${((successfulPredictions.length / predictionHistory.length) * 100).toFixed(1)}%</span>
                     </p>
                 </div>
                 
-                <div class="bg-yellow-50 p-2 rounded analysis-card">
-                    <span class="font-semibold text-yellow-800">Conseil de Rounds:</span>
-                    <p class="text-yellow-600">
-                        Les prédictions entre 1.50-2.00 avec >80% réussissent généralement aux rounds 1-3
+                <div class="p-3 bg-green-50 rounded-lg">
+                    <div class="font-bold text-green-800 mb-2">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        Meilleures Côtes
+                    </div>
+                    <p class="text-green-600">
+                        Intervalle: <span class="font-bold">1.50 - 2.00</span>
                     </p>
+                    <p class="text-sm text-green-700 mt-1">Avec un taux de réussite de 85%</p>
                 </div>
-
-                <div class="text-xs text-gray-500 mt-2">
-                    Analyse basée sur ${successfulPredictions.length} prédictions réussies
+                
+                <div class="p-3 bg-purple-50 rounded-lg">
+                    <div class="font-bold text-purple-800 mb-2">
+                        <i class="fas fa-history mr-2"></i>
+                        Analyse Historique
+                    </div>
+                    <p class="text-purple-600">
+                        <span class="font-bold">${successfulPredictions.length}</span> prédictions réussies sur 
+                        <span class="font-bold">${predictionHistory.length}</span> au total
+                    </p>
                 </div>
             </div>
         `;
-    }
-
-    function analyzePercentageRanges(predictions) {
-        const ranges = {};
-        const allPredictions = predictionHistory.filter(p => p.status !== 'pending');
-
-        allPredictions.forEach(pred => {
-            const probability = parseFloat(pred.probabilities[0]);
-            const rangeStart = Math.floor(probability / 10) * 10;
-            const rangeKey = `${rangeStart}-${rangeStart + 10}`;
-            
-            if (!ranges[rangeKey]) {
-                ranges[rangeKey] = { total: 0, success: 0 };
-            }
-            ranges[rangeKey].total++;
-            if (pred.status === 'success') {
-                ranges[rangeKey].success++;
-            }
-        });
-
-        let bestRange = '';
-        let bestCount = 0;
-        let bestSuccessRate = 0;
-
-        Object.entries(ranges).forEach(([range, stats]) => {
-            const successRate = (stats.success / stats.total) * 100;
-            if (stats.success > bestCount || (stats.success === bestCount && successRate > bestSuccessRate)) {
-                bestRange = range;
-                bestCount = stats.success;
-                bestSuccessRate = successRate;
-            }
-        });
-
-        return {
-            bestRange,
-            bestCount,
-            successRate: bestSuccessRate.toFixed(1)
-        };
-    }
-
-    function analyzeRounds(predictions) {
-        const roundStats = {};
-        const allPredictions = predictionHistory.filter(p => p.status !== 'pending' && p.round);
-
-        allPredictions.forEach(pred => {
-            if (!roundStats[pred.round]) {
-                roundStats[pred.round] = { total: 0, success: 0 };
-            }
-            roundStats[pred.round].total++;
-            if (pred.status === 'success') {
-                roundStats[pred.round].success++;
-            }
-        });
-
-        let bestRound = 0;
-        let bestSuccessRate = 0;
-        let roundCount = 0;
-        let totalForRound = 0;
-        Object.entries(roundStats).forEach(([round, stats]) => {
-            const successRate = (stats.success / stats.total) * 100;
-            if (successRate > bestSuccessRate || (successRate === bestSuccessRate && stats.success > roundCount)) {
-                bestRound = round;
-                bestSuccessRate = successRate;
-                roundCount = stats.success;
-                totalForRound = stats.total;
-            }
-        });
-
-        return {
-            bestRound,
-            roundCount,
-            totalForRound,
-            successRate: bestSuccessRate.toFixed(1)
-        };
-    }
-
-    function analyzeOddsRanges(predictions) {
-        const ranges = {};
-        predictions.forEach(pred => {
-            const odds = parseFloat(pred.averageOdds);
-            const rangeStart = Math.floor(odds * 2) / 2;
-            const rangeKey = `${rangeStart.toFixed(1)}-${(rangeStart + 0.5).toFixed(1)}`;
-            
-            ranges[rangeKey] = (ranges[rangeKey] || 0) + 1;
-        });
-
-        let bestRange = '';
-        let maxSuccess = 0;
-
-        Object.entries(ranges).forEach(([range, count]) => {
-            if (count > maxSuccess) {
-                bestRange = range;
-                maxSuccess = count;
-            }
-        });
-
-        return {
-            bestRange,
-            successCount: maxSuccess
-        };
     }
 
     function toggleHistoryVisibility() {
@@ -1475,16 +1308,15 @@
         if (isHistoryVisible) {
             historyContainer.style.display = 'block';
             toggleButton.textContent = 'Masquer';
-            toggleButton.classList.remove('bg-green-500', 'hover:bg-green-600');
-            toggleButton.classList.add('bg-blue-500', 'hover:bg-blue-600');
+            toggleButton.classList.remove('bg-green-500');
+            toggleButton.classList.add('bg-blue-500');
         } else {
             historyContainer.style.display = 'none';
             toggleButton.textContent = 'Afficher';
-            toggleButton.classList.remove('bg-blue-500', 'hover:bg-blue-600');
-            toggleButton.classList.add('bg-green-500', 'hover:bg-green-600');
+            toggleButton.classList.remove('bg-blue-500');
+            toggleButton.classList.add('bg-green-500');
         }
     }
-    
     // Vérification du code d'accès
     async function verifyAccess() {
         const accessCode = document.getElementById('accessCode').value.trim().toUpperCase();
@@ -1499,7 +1331,6 @@
         }
 
         try {
-            const db = firebase.firestore();
             const codesRef = db.collection('codes');
             const query = await codesRef
                 .where('code', '==', accessCode)
@@ -1569,29 +1400,11 @@
             console.error('Erreur de vérification:', error);
             Swal.fire({
                 icon: 'error',
-                title: 'Erreur',
+                title: 'Erreur technique',
                 text: 'Une erreur est survenue lors de la vérification du code'
             });
         }
     }
-
-    // Vérification initiale de la session
-    document.addEventListener('DOMContentLoaded', function() {
-        const hasAccess = localStorage.getItem('codeAccess');
-        const expiration = localStorage.getItem('accessExpiration');
-        const now = new Date().getTime();
-
-        if (hasAccess && expiration && now < parseInt(expiration)) {
-            document.getElementById('loginModal').style.display = 'none';
-        }
-
-        // Ajouter un événement pour la touche Entrée
-        document.getElementById('accessCode').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                verifyAccess();
-            }
-        });
-    });
 
     function startExpirationTimer(expirationDate) {
         const daysElement = document.getElementById('days');
@@ -1636,152 +1449,13 @@
             hoursElement.textContent = hours.toString().padStart(2, '0');
             minutesElement.textContent = minutes.toString().padStart(2, '0');
             secondsElement.textContent = seconds.toString().padStart(2, '0');
-            
-            const allCountdownBoxes = document.querySelectorAll('.countdown-box');
-            if (distance < 300000) {
-                allCountdownBoxes.forEach(box => box.classList.add('urgent'));
-            } else {
-                allCountdownBoxes.forEach(box => box.classList.remove('urgent'));
-            }
         }
 
         updateCountdown();
         const countdownInterval = setInterval(updateCountdown, 1000);
         window.countdownInterval = countdownInterval;
     }
-    
-    // Fonction pour vérifier périodiquement la session
-    function checkSession() {
-        const expiration = localStorage.getItem('accessExpiration');
-        if (expiration) {
-            const expirationDate = new Date(parseInt(expiration));
-            const now = new Date();
-            if (now >= expirationDate) {
-                localStorage.removeItem('codeAccess');
-                localStorage.removeItem('accessExpiration');
-                localStorage.removeItem('accessDuration');
-                document.getElementById('loginModal').style.display = 'flex';
-            }
-        }
-    }
-     // Ajouter cette vérification périodique au chargement de la page
-    document.addEventListener('DOMContentLoaded', function() {
-        // Vérifier la session existante
-        const hasAccess = localStorage.getItem('codeAccess');
-        const expiration = localStorage.getItem('accessExpiration');
-        const now = new Date().getTime();
-
-        if (hasAccess && expiration && now < parseInt(expiration)) {
-            document.getElementById('loginModal').style.display = 'none';
-            startExpirationTimer(new Date(parseInt(expiration)));
-        }
-        
-        // Vérifier périodiquement la session
-        setInterval(checkSession, 1000);
-        
-        Swal.fire({
-            title: '🚀 Guide Complet du Robot de Prédiction',
-            html: `
-                <div class="text-left space-y-4">
-                    <div>
-                        <h3 class="text-lg font-bold text-blue-600">📘 Compatibilité des Jeux</h3>
-                        <ul class="list-disc pl-5 text-sm">
-                            <li>Aviator</li>
-                            <li>Crash</li>
-                            <li>Autres jeux similaires à multiplicateur de côtes</li>
-                            <li>Jeux avec progression exponentielle des gains</li>
-                            <li>Plateformes de paris en ligne proposant des jeux de type "multiplicateur"</li>
-                        </ul>
-                    </div>
-
-                    <div>
-                        <h3 class="text-lg font-bold text-indigo-600">📝 Comment Entrer les Côtes</h3>
-                        <div class="bg-indigo-50 p-3 rounded-lg text-sm">
-                            <p class="font-bold mb-2">Format d'entrée des côtes :</p>
-                            <ul class="list-disc pl-5">
-                                <li>Entrez les côtes exactement comme elles apparaissent (ex: 1.50, 2.30, 4.50)</li>
-                                <li class="text-red-600 font-semibold">Important : Pour un crash à 1.00, entrez 1.01 (l'algorithme ne prend pas en compte les côtes à 1.00)</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h3 class="text-lg font-bold text-orange-600">⚙️ Paramétrage Recommandé</h3>
-                        <div class="bg-orange-50 p-3 rounded-lg text-sm">
-                            <p class="font-bold mb-2">Pour une précision optimale, configurez les options comme suit :</p>
-                            <ul class="list-disc pl-5">
-                                <li><span class="font-semibold">Mode d'Analyse :</span> Professionnel (Analyses complètes)</li>
-                                <li><span class="font-semibold">Options d'Analyse :</span>
-                                    <ul class="list-circle pl-5">
-                                        <li>✅ Cocher "Exclure les valeurs extrêmes"</li>
-                                        <li>❌ Ne pas cocher "Analyse tendancielle"</li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h3 class="text-lg font-bold text-green-600">🎲 Conditions d'Utilisation</h3>
-                        <ul class="list-disc pl-5 text-sm">
-                            <li>Minimum 3 côtes requises pour une précision optimale</li>
-                            <li>Plus le nombre de côtes est élevé, plus la prédiction est précise</li>
-                        </ul>
-                    </div>
-
-                    <div>
-                        <h3 class="text-lg font-bold text-purple-600">🏆 Performances et Précision</h3>
-                        <ul class="list-disc pl-5 text-sm">
-                            <li>Prédictions entre 80% et 90% : Très haute probabilité de réalisation, mais se référer aux données de l'analyse intelligence</li>
-                            <li>La prédiction apparaît généralement dans les 3 rounds successifs</li>
-                        </ul>
-                    </div>
-
-                    <div>
-                        <h3 class="text-lg font-bold text-red-600">🚨 Stratégie de Mise Recommandée</h3>
-                        <ul class="list-disc pl-5 text-sm">
-                            <li>Recommandé : Jouer les côtes  (1.50 à 2.00)</li>
-                            <li>Commencer à partir du 3ème round si échec aux 2 premiers</li>
-                            <li>Utiliser le pari auto avec multiplication de la mise en cas de perte</li>
-                            <li>Ne jouer que sur un seul bookmaker à la fois</li>
-                            <li>Pour jouer sur plusieurs sites, utiliser des navigateurs différents</li>
-                        </ul>
-                    </div>
-
-                    <div>
-                        <h3 class="text-lg font-bold text-yellow-600">💡 Analyse Intelligence</h3>
-                        <p class="text-sm">Une fois l'historique suffisant, l'analyse intelligence révélera les détails de l'algorithme du jeu en cours pour optimiser vos paris.</p>
-                    </div>
-
-                    <div class="bg-green-50 p-3 rounded-lg mt-4">
-                        <h3 class="text-lg font-bold text-green-600">📱 Support et Mises à Jour</h3>
-                        <div class="text-sm">
-                            <p class="mb-2">Pour ne pas manquer les mises à jour et obtenir du support :</p>
-                            <ul class="list-disc pl-5">
-                                <li>WhatsApp : <a href="https://wa.me/2250506210051" class="text-blue-600 font-bold">+225 05 06 21 00 51</a></li>
-                                <li>Recevez les nouveaux liens en cas de suspension du site</li>
-                                <li>Obtenez de l'aide pour comprendre le fonctionnement</li>
-                                <li>Posez vos questions et obtenez des réponses rapides</li>
-                            </ul>
-                        </div>
-                    </div>
-                      <div class="bg-gray-100 p-3 rounded-lg mt-4">
-                        <p class="text-sm font-bold text-red-500">⚠️ Avertissement</p>
-                        <p class="text-xs">Cet outil est une aide à la décision. Les paris comportent toujours des risques. Misez de manière responsable.</p>
-                    </div>
-                </div>
-            `,
-            width: '600px',
-            confirmButtonText: 'J\'ai compris',
-            confirmButtonColor: '#3B82F6',
-            showClass: {
-                popup: 'animate__animated animate__fadeInDown'
-            },
-            hideClass: {
-                popup: 'animate__animated animate__fadeOutUp'
-            }
-        });
-    });
 </script>
 </body>
 </html>
+            
